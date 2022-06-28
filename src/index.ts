@@ -63,6 +63,7 @@ export interface AfterHookOptions {
   templateDir: string;
   year: number;
   answers: View;
+  pm: PackageManager;
   run: (
     command: string,
     options?: CommonOptions<string>
@@ -273,10 +274,10 @@ export async function create(appName: string, options: Options) {
     isDev?: boolean
   ): Promise<void> => {};
 
-  if (exists('package.json', packageDir)) {
-    // guess which package manager to use
-    const packageManager = args['node-pm'] ?? whichPm();
+  // guess which package manager to use
+  const packageManager = args['node-pm'] ?? whichPm();
 
+  if (exists('package.json', packageDir)) {
     // install deps only if skipNpmInstall is not falsy
     if (!(skipNpmInstall || args['skip-install'])) {
       console.log(`\nInstalling dependencies using ${packageManager}`);
@@ -311,6 +312,7 @@ export async function create(appName: string, options: Options) {
     template,
     templateDir,
     year,
+    pm: packageManager,
     run,
     installNpmPackage,
     answers: {
